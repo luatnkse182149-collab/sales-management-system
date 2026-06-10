@@ -39,7 +39,7 @@ public class ProductList {
 
         System.out.print("Enter Stock Quantity: ");
         int stock =
-                Integer.parseInt(sc.nextLine());
+                Integer.parseInt(sc.nextLine());        
 
         if(price < 0 || stock < 0) {
 

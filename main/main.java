@@ -37,9 +37,10 @@ public class main {
 
             System.out.println(
                     "4. View Customers");
-
             System.out.println(
-                    "5. Exit");
+                    "5. View VIP Customers");
+            System.out.println(
+                    "6. Exit");
 
             System.out.print(
                     "Choose: ");
@@ -54,7 +55,21 @@ public class main {
                     break;
 
                 case 2:
-                    customerList.addCustomer();
+                    System.out.println(
+                            "1. Add Regular Customer");
+                    System.out.println(
+                            "2. Add VIP Customer");
+                    int subChoice = Integer.parseInt(sc.nextLine());
+                    switch (subChoice) {
+                        case 1:
+                            customerList.addCustomer();
+                            break;
+                        case 2:
+                            customerList.addVipCustomer();
+                            break;
+                        default:
+                            System.out.println("Invalid Choice!");
+                    }
                     break;
 
                 case 3:
@@ -66,6 +81,10 @@ public class main {
                     break;
 
                 case 5:
+                    customerList.viewVipCustomer();
+                    break;
+
+                case 6:
                     System.out.println(
                             "Exit Program");
                     break;
@@ -75,6 +94,6 @@ public class main {
                             "Invalid Choice!");
             }
 
-        } while (choice != 5);
+        } while (choice != 6);
     }
 }

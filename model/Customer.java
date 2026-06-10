@@ -52,5 +52,9 @@ public class Customer {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public void viewVipCustomer() {
+  
+    }
     
 }
