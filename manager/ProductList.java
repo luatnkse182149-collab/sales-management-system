@@ -3,26 +3,27 @@ package manager;
 import java.util.ArrayList;
 import java.util.Scanner;
 import model.Product;
+import model.ImportedProduct; // Import lớp con mới tạo
 
 public class ProductList {
     
-    private final ArrayList<Product> productList =
-            new ArrayList<>();
-
+    private final ArrayList<Product> productList = new ArrayList<>();
     Scanner sc = new Scanner(System.in);
 
     public void addProduct() {
+        System.out.println("--- Select Product Type ---");
+        System.out.println("1. Local Product (Standard)");
+        System.out.println("2. Imported Product");
+        System.out.print("Choose: ");
+        int type = Integer.parseInt(sc.nextLine());
 
         System.out.print("Enter Product ID: ");
         String id = sc.nextLine();
 
+        // Thuật toán kiểm tra trùng ID (Giữ nguyên từ M2)
         for(Product p : productList) {
-
-            if(p.getProductID()
-                    .equalsIgnoreCase(id)) {
-
-                System.out.println(
-                        "Duplicate Product ID!");
+            if(p.getProductID().equalsIgnoreCase(id)) {
+                System.out.println("Duplicate Product ID!");
                 return;
             }
         }
@@ -34,47 +35,68 @@ public class ProductList {
         String category = sc.nextLine();
 
         System.out.print("Enter Price: ");
-        double price =
-                Double.parseDouble(sc.nextLine());
+        double price = Double.parseDouble(sc.nextLine());
 
         System.out.print("Enter Stock Quantity: ");
-        int stock =
-                Integer.parseInt(sc.nextLine());        
+        int stock = Integer.parseInt(sc.nextLine());
 
         if(price < 0 || stock < 0) {
-
-            System.out.println(
-                    "Invalid Data!");
+            System.out.println("Invalid Data!");
             return;
         }
 
-        Product product =
-                new Product(id, name,
-                        category, price, stock);
+        if (type == 1) {
+            // Khởi tạo sản phẩm thường
+            Product product = new Product(id, name, category, price, stock);
+            productList.add(product);
+            System.out.println("Standard Product Added Successfully.");
+        } else if (type == 2) {
+            // Thu thập thêm thông tin riêng của sản phẩm nhập khẩu
+            System.out.print("Enter Import Tax (e.g., 0.1 for 10%): ");
+            double tax = Double.parseDouble(sc.nextLine());
+            
+            System.out.print("Enter Origin Country: ");
+            String country = sc.nextLine();
+            
+            if(tax < 0) {
+                System.out.println("Invalid Tax Rate!");
+                return;
+            }
 
-        productList.add(product);
-
-        System.out.println(
-                "Product Added Successfully.");
+            // Lưu đối tượng con vào danh sách kiểu dữ liệu lớp cha (Polymorphic Collection)
+            Product importedProduct = new ImportedProduct(id, name, category, price, stock, tax, country);
+            productList.add(importedProduct);
+            System.out.println("Imported Product Added Successfully.");
+        } else {
+            System.out.println("Invalid Type Choice!");
+        }
     }
 
     public void viewProduct() {
-
-        System.out.println(
-                "===== PRODUCT LIST =====");
-
+        System.out.println("===== PRODUCT LIST =====");
         for(Product p : productList) {
-
-            System.out.println(
-                    p.getProductID()
-                    + " | "
-                    + p.getProductName()
-                    + " | "
-                    + p.getCategory()
-                    + " | "
-                    + p.getPrice()
-                    + " | "
-                    + p.getStockQuantity());
+            // Cơ chế Đa hình lúc chạy (Run-time Polymorphism):
+// Nếu p là ImportedProduct, hàm getPrice() đã ghi đè sẽ tự động được kích hoạt để in ra giá đã cộng thuế
+            System.out.print(p.getProductID() + " | " 
+                             + p.getProductName() + " | " 
+                             + p.getCategory() + " | " 
+                             + p.getPrice() + " | " 
+                             + p.getStockQuantity());
+            
+            // Kiểm tra và hiển thị thêm thông tin nếu là sản phẩm nhập khẩu
+            if (!(p instanceof model.ImportedProduct)) {
+            } else {
+                model.ImportedProduct ip = (model.ImportedProduct) p;
+                System.out.print(" | Tax: " + (ip.getImportTax() * 100) + "% | Origin: " + ip.getOriginCountry());
+            }
+            System.out.println();
         }
     }
+    
+    // Bạn có thể bổ sung thêm phương thức lấy danh sách hoặc tìm kiếm phục vụ cho logic đơn hàng của bạn Lâm
+    public ArrayList<Product> getRawList() {
+        return productList;
     }
+
+    
+}
