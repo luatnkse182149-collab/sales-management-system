@@ -1,10 +1,4 @@
 package model;
-
-/**
- * Class ImportedProduct kế thừa từ Product để quản lý sản phẩm nhập khẩu.
- * Đã sửa toàn bộ lỗi UnsupportedOperationException từ NetBeans.
- * * @author Nam
- */
 public class ImportedProduct extends Product {
     // 1. Thuộc tính bổ sung riêng cho sản phẩm nhập khẩu
     private double importTax; // Thuế nhập khẩu (ví dụ: 0.1 nghĩa là 10%)
