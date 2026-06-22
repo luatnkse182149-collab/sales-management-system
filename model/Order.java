@@ -23,7 +23,7 @@ public class Order {
     }
 
     /**
-     * PHẦN LOGIC ĐA HÌNH CỦA LÂM (Run-time Polymorphism):
+     
      * Hàm tự động tính toán tổng tiền sau khi đã áp dụng các chính sách giảm giá/thuế đa hình.
      */
     public double calculateTotal() {
