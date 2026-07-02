@@ -1,6 +1,11 @@
 
 package manager;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import model.Customer;
@@ -129,4 +134,99 @@ public class CustomerList {
                 "VIP Customer Added Successfully.");
     
 }
+public void saveCustomersToFile(String fileName) {
+
+    try (PrintWriter pw = new PrintWriter(new FileWriter(fileName))) {
+
+        for (Customer c : customerList) {
+
+            if (c instanceof model.VipCustomer) {
+
+                model.VipCustomer vip = (model.VipCustomer) c;
+
+                pw.println(
+                        "VIP,"
+                        + vip.getCustomerID() + ","
+                        + vip.getCustomerName() + ","
+                        + vip.getPhone() + ","
+                        + vip.getAddress() + ","
+                        + vip.getVipLevel() + ","
+                        + vip.getDiscountRate() + ","
+                        + vip.getMembershipCardID() + ","
+                        + vip.getRewardPoints());
+
+            } else {
+
+                pw.println(
+                        "CUSTOMER,"
+                        + c.getCustomerID() + ","
+                        + c.getCustomerName() + ","
+                        + c.getPhone() + ","
+                        + c.getAddress());
+
+            }
+
+        }
+
+        System.out.println("Customer data saved successfully.");
+
+    } catch (IOException e) {
+
+        System.out.println("Error saving customer file.");
+
+    }
+
+}
+public void loadCustomersFromFile(String fileName) {
+
+    customerList.clear();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+            String[] data = line.split(",");
+
+            if (data[0].equalsIgnoreCase("CUSTOMER")) {
+
+                Customer c = new Customer(
+                        data[1],
+                        data[2],
+                        data[3],
+                        data[4]);
+
+                customerList.add(c);
+
+            }
+
+            else if (data[0].equalsIgnoreCase("VIP")) {
+
+                model.VipCustomer vip =
+                        new model.VipCustomer(
+                                data[1],
+                                data[2],
+                                data[3],
+                                data[4],
+                                data[5],
+                                Integer.parseInt(data[6]), data[7], Integer.parseInt(data[8]));
+
+                customerList.add(vip);
+
+            }
+
+        }
+
+        System.out.println("Customer data loaded successfully.");
+
+    } catch (IOException e) {
+
+        System.out.println("Error loading customer file.");
+
+    }
+
+}
+
+
 }
