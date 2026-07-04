@@ -5,6 +5,14 @@ import java.util.Scanner;
 import model.Product;
 import model.ImportedProduct; // Import lớp con mới tạo
 
+// import sau khi tạo saveProductsToFile và loadProductsFromFile 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+
 public class ProductList {
     
     private final ArrayList<Product> productList = new ArrayList<>();
@@ -96,6 +104,103 @@ public class ProductList {
     // Bạn có thể bổ sung thêm phương thức lấy danh sách hoặc tìm kiếm phục vụ cho logic đơn hàng của bạn Lâm
     public ArrayList<Product> getRawList() {
         return productList;
+    }
+//  saveProductsToFile() ở đây
+
+  public void saveProductsToFile(String fileName) {
+
+    try (PrintWriter pw = new PrintWriter(new FileWriter(fileName))) {
+
+        for (Product p : productList) {
+
+            if (p instanceof ImportedProduct) {
+
+                ImportedProduct ip = (ImportedProduct) p;
+
+                pw.println(
+                        "IMPORTED,"
+                        + ip.getProductID() + ","
+                        + ip.getProductName() + ","
+                        + ip.getCategory() + ","
+                        + ip.getPrice() + ","
+                        + ip.getStockQuantity() + ","
+                        + ip.getImportTax() + ","
+                        + ip.getOriginCountry());
+
+            } else {
+
+                pw.println(
+                        "PRODUCT,"
+                        + p.getProductID() + ","
+                        + p.getProductName() + ","
+                        + p.getCategory() + ","
+                        + p.getPrice() + ","
+                        + p.getStockQuantity());
+
+            }
+
+        }
+
+        System.out.println("Product data saved successfully.");
+
+    } catch (IOException e) {
+
+        System.out.println("Error saving product file.");
+
+    }
+
+}
+    
+// loadProductsFromFile() ở đây    
+    public void loadProductsFromFile(String fileName) {
+
+    productList.clear();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+            String[] data = line.split(",");
+
+            if (data[0].equalsIgnoreCase("PRODUCT")) {
+
+                Product p = new Product(
+                        data[1],
+                        data[2],
+                        data[3],
+                        Double.parseDouble(data[4]),
+                        Integer.parseInt(data[5]));
+
+                productList.add(p);
+
+            }
+
+            else if (data[0].equalsIgnoreCase("IMPORTED")) {
+
+                ImportedProduct ip =
+                        new ImportedProduct(
+                                data[1],
+                                data[2],
+                                data[3],
+                                Double.parseDouble(data[4]),
+                                Integer.parseInt(data[5]),
+                                Double.parseDouble(data[6]),
+                                data[7]);
+
+                productList.add(ip);
+
+            }
+
+        }
+
+        System.out.println("Product data loaded successfully.");
+
+    } catch (IOException e) {
+
+        System.out.println("Error loading product file.");
+
     }
 
     
