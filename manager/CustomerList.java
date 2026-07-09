@@ -202,19 +202,18 @@ public void loadCustomersFromFile(String fileName) {
             }
 
             else if (data[0].equalsIgnoreCase("VIP")) {
-
-                model.VipCustomer vip =
-                        new model.VipCustomer(
-                                data[1],
-                                data[2],
-                                data[3],
-                                data[4],
-                                data[5],
-                                Integer.parseInt(data[6]), data[7], Integer.parseInt(data[8]));
-
-                customerList.add(vip);
-
-            }
+    model.VipCustomer vip = new model.VipCustomer(
+            data[1], // ID
+            data[2], // Name
+            data[3], // Phone
+            data[4], // Address
+            data[5], // VIP Level
+            Double.parseDouble(data[6]), // Sửa thành Double để đọc discountRate (ví dụ: 0.15)
+            data[7], // Membership Card ID
+            Double.parseDouble(data[8])  // Sửa thành Double để đọc rewardPoints (ví dụ: 500.0)
+    );
+    customerList.add(vip);
+}
 
         }
 

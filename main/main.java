@@ -111,8 +111,13 @@ public class main {
                     break;
 
                 case 7:
-                    System.out.println("Exit Program. Goodbye!");
-                    break;
+                    // === TÍCH HỢP M4: TỰ ĐỘNG LƯU DỮ LIỆU TRƯỚC KHI THOÁT ===
+                System.out.println("\nSaving data to system...");
+                productList.saveProductsToFile("products.txt");
+                customerList.saveCustomersToFile("customers.txt");
+                
+                System.out.println("Exit Program. Goodbye!");
+                break;
 
                 default:
                     System.out.println("Invalid Choice!");
