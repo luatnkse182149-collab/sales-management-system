@@ -109,7 +109,7 @@ public class ProductList {
 
   public void saveProductsToFile(String fileName) {
 
-    try (PrintWriter pw = new PrintWriter(new FileWriter(fileName))) {
+    try (PrintWriter pw = new PrintWriter(new FileWriter(fileName, true))) {
 
         for (Product p : productList) {
 

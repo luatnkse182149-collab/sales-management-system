@@ -136,7 +136,7 @@ public class CustomerList {
 }
 public void saveCustomersToFile(String fileName) {
 
-    try (PrintWriter pw = new PrintWriter(new FileWriter(fileName))) {
+    try (PrintWriter pw = new PrintWriter(new FileWriter(fileName, true))) {
 
         for (Customer c : customerList) {
 
