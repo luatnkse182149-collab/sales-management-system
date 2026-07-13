@@ -1,4 +1,3 @@
-
 package manager;
 
 import java.io.BufferedReader;
@@ -73,6 +72,15 @@ public class CustomerList {
         }
     }
 
+    public Customer findCustomerByCode(String id) {
+        for (Customer c : customerList) {
+            if (c.getCustomerID().equalsIgnoreCase(id)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public void viewVipCustomer() {
         System.out.println(
                 "===== VIP CUSTOMER LIST =====");
@@ -112,8 +120,7 @@ public class CustomerList {
 
         System.out.print("Enter VIP Level: ");
         String vipLevel = sc.nextLine();
-
-        System.out.print("Enter Discount Rate: ");
+System.out.print("Enter Discount Rate: ");
         double discountRate =
                 Double.parseDouble(sc.nextLine());
 
@@ -212,7 +219,7 @@ public void loadCustomersFromFile(String fileName) {
             data[7], // Membership Card ID
             Double.parseDouble(data[8])  // Sửa thành Double để đọc rewardPoints (ví dụ: 500.0)
     );
-    customerList.add(vip);
+customerList.add(vip);
 }
 
         }

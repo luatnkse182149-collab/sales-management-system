@@ -31,7 +31,7 @@ public class main {
             System.out.println("3. View Products");
             System.out.println("4. View Customers");
             System.out.println("5. View VIP Customers");
-            System.out.println("6. Create & Process Demo Transaction");
+            System.out.println("6. Create Order & Print Bill");
             System.out.println("7. Exit");
             System.out.print("Choose: ");
 
@@ -75,44 +75,79 @@ public class main {
                     break;
 
                 case 6:
-                    
-                    System.out.println("\n===== CREATE DEMO TRANSACTION =====");
-                    
-                    
-                    Customer normalCust = new Customer("C01", "Tran Minh Nam", "090111", "HCMC");
-                    VipCustomer vipCust = new VipCustomer("V02", "Vu Le Hoang Long", "090222", "Hanoi", "Gold", 0.15, "VIP-GOLD-777", 500.0);
-                    
-                    
-                    Product regularProd = new Product("P01", "Standard Laptop", "Tech", 1000.0, 10);
-                    
-                    ImportedProduct importProd = new ImportedProduct("P02", "Imported Wine", "Food", 100.0, 5, 0.2, "France");
+                    System.out.println("\n===== CREATE ORDER =====");
 
-                    System.out.println("----------------------------------------------------------------");
-                    System.out.println(">>> TRANSACTION 1: Standard Customer buying an Imported Product");
-                    
-                    Order order1 = new Order("OR-001", normalCust); 
-                    order1.addProductToOrder(importProd); 
-                    
-                    
-                    double total1 = order1.calculateTotal();
-                    System.out.println("Final Bill Amount for " + normalCust.getCustomerName() + ": $" + total1); 
-                    
+                    // 1. Select an existing customer
+                    System.out.print("Enter Customer ID: ");
+                    String custCode = sc.nextLine();
+                    Customer selectedCustomer = customerList.findCustomerByCode(custCode);
 
-                    System.out.println("----------------------------------------------------------------");
-                    System.out.println(">>> TRANSACTION 2: VIP Customer buying the same Imported Product");
-                    
-                    Order order2 = new Order("OR-002", vipCust); 
-                    order2.addProductToOrder(importProd); // Thêm cùng mặt hàng rượu nhập khẩu
-                    
-                    
-                    double total2 = order2.calculateTotal();
-                    System.out.println("Final Bill Amount for " + vipCust.getCustomerName() + ": $" + total2);
-                    
-                    System.out.println("----------------------------------------------------------------");
+                    if (selectedCustomer == null) {
+                        System.out.println("Customer not found! Please add the customer first (option 2).");
+                        break;
+}
+
+                    // 2. Create a new order for that customer
+                    String orderCode = "OR-" + System.currentTimeMillis();
+                    System.out.println("Generated Order ID: " + orderCode);
+                    Order order = new Order(orderCode, selectedCustomer);
+
+                    // 3. Add products to the order (loop until user types 'done')
+                    boolean addingProducts = true;
+                    while (addingProducts) {
+                        System.out.print("Enter Product ID to add (or type 'done' to finish): ");
+                        String prodCode = sc.nextLine();
+
+                        if (prodCode.equalsIgnoreCase("done")) {
+                            addingProducts = false;
+                            continue;
+                        }
+
+                        Product selectedProduct = productList.findProductByCode(prodCode);
+                        if (selectedProduct == null) {
+                            System.out.println("Product not found with ID: " + prodCode);
+                            continue;
+                        }
+
+                        System.out.print("Enter quantity: ");
+                        int qty = Integer.parseInt(sc.nextLine());
+
+                        if (qty <= 0) {
+                            System.out.println("Invalid quantity!");
+                            continue;
+                        }
+
+                        // Order only supports adding one product at a time, so loop by quantity
+                        for (int i = 0; i < qty; i++) {
+                            order.addProductToOrder(selectedProduct);
+                        }
+
+                        System.out.println("Added " + qty + " x " + selectedProduct.getProductName());
+                    }
+
+                    if (order.getItems().isEmpty()) {
+                        System.out.println("Order has no items. Cancelling bill creation.");
+                        break;
+                    }
+
+                    // 4. Calculate total and print the bill
+                    double total = order.calculateTotal();
+
+                    System.out.println("\n========== BILL ==========");
+                    System.out.println("Order ID: " + order.getOrderID());
+                    System.out.println("Customer: " + selectedCustomer.getCustomerName()
+                            + (selectedCustomer instanceof VipCustomer ? " (VIP)" : " (Regular)"));
+                    System.out.println("---------------------------");
+                    for (Product p : order.getItems()) {
+                        System.out.println("- " + p.getProductName() + " : $" + p.getPrice());
+                    }
+                    System.out.println("---------------------------");
+                    System.out.println("Total Amount: $" + total);
+                    System.out.println("===========================");
                     break;
 
                 case 7:
-                    // === TÍCH HỢP M4: TỰ ĐỘNG LƯU DỮ LIỆU TRƯỚC KHI THOÁT ===
+                    
                 System.out.println("\nSaving data to system...");
                 productList.saveProductsToFile("products.txt");
                 customerList.saveCustomersToFile("customers.txt");

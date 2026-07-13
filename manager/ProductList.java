@@ -83,7 +83,7 @@ public class ProductList {
     public void viewProduct() {
         System.out.println("===== PRODUCT LIST =====");
         for(Product p : productList) {
-            // Cơ chế Đa hình lúc chạy (Run-time Polymorphism):
+// Cơ chế Đa hình lúc chạy (Run-time Polymorphism):
 // Nếu p là ImportedProduct, hàm getPrice() đã ghi đè sẽ tự động được kích hoạt để in ra giá đã cộng thuế
             System.out.print(p.getProductID() + " | " 
                              + p.getProductName() + " | " 
@@ -105,6 +105,15 @@ public class ProductList {
     public ArrayList<Product> getRawList() {
         return productList;
     }
+    
+    public Product findProductByCode(String id) {
+    for (Product p : productList) {
+        if (p.getProductID().equalsIgnoreCase(id)) {
+            return p;
+        }
+    }
+    return null;
+}
 //  saveProductsToFile() ở đây
 
   public void saveProductsToFile(String fileName) {
@@ -167,7 +176,7 @@ public class ProductList {
             if (data[0].equalsIgnoreCase("PRODUCT")) {
 
                 Product p = new Product(
-                        data[1],
+data[1],
                         data[2],
                         data[3],
                         Double.parseDouble(data[4]),
