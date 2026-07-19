@@ -90,25 +90,67 @@ public class ProductList {
     }
 
     public void viewProduct() {
-        System.out.println("===== PRODUCT LIST =====");
-        for(Product p : productList) {
-// Cơ chế Đa hình lúc chạy (Run-time Polymorphism):
-// Nếu p là ImportedProduct, hàm getPrice() đã ghi đè sẽ tự động được kích hoạt để in ra giá đã cộng thuế
-            System.out.print(p.getProductID() + " | " 
-                             + p.getProductName() + " | " 
-                             + p.getCategory() + " | " 
-                             + p.getPrice() + " | " 
-                             + p.getStockQuantity());
-            
-            // Kiểm tra và hiển thị thêm thông tin nếu là sản phẩm nhập khẩu
-            if (!(p instanceof model.ImportedProduct)) {
-            } else {
-                model.ImportedProduct ip = (model.ImportedProduct) p;
-                System.out.print(" | Tax: " + (ip.getImportTax() * 100) + "% | Origin: " + ip.getOriginCountry());
-            }
-            System.out.println();
+
+    System.out.println("\n================ PRODUCT LIST ================");
+
+    System.out.printf("%-8s %-20s %-15s %-10s %-8s %-10s %-15s\n",
+            "ID",
+            "Name",
+            "Category",
+            "Price",
+            "Stock",
+            "Tax",
+            "Origin");
+
+    System.out.println("-------------------------------------------------------------------------------");
+
+    for(Product p : productList){
+
+        if(p instanceof ImportedProduct){
+
+            ImportedProduct ip=(ImportedProduct)p;
+
+            System.out.printf("%-8s %-20s %-15s %-10.2f %-8d %-10.0f%% %-15s\n",
+
+                    ip.getProductID(),
+
+                    ip.getProductName(),
+
+                    ip.getCategory(),
+
+                    ip.getPrice(),
+
+                    ip.getStockQuantity(),
+
+                    ip.getImportTax()*100,
+
+                    ip.getOriginCountry());
+
         }
+
+        else{
+
+            System.out.printf("%-8s %-20s %-15s %-10.2f %-8d %-10s %-15s\n",
+
+                    p.getProductID(),
+
+                    p.getProductName(),
+
+                    p.getCategory(),
+
+                    p.getPrice(),
+
+                    p.getStockQuantity(),
+
+                    "-",
+
+                    "-");
+
+        }
+
     }
+
+}
     
     // Bạn có thể bổ sung thêm phương thức lấy danh sách hoặc tìm kiếm phục vụ cho logic đơn hàng của bạn Lâm
     public ArrayList<Product> getRawList() {
