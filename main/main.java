@@ -109,14 +109,21 @@ public class main {
                             continue;
                         }
 
-                        System.out.print("Enter quantity: ");
-                        int qty = Integer.parseInt(sc.nextLine());
+                        //System.out.print("Enter quantity: ");
+                        //int qty = Integer.parseInt(sc.nextLine());
 
-                        if (qty <= 0) {
-                            System.out.println("Invalid quantity!");
+                        //if (qty <= 0) {
+                            //System.out.println("Invalid quantity!");
+                            //continue;
+                        //}
+                        // code mới Không cho bán vượt số lượng tồn
+
+                        if (qty > selectedProduct.getStockQuantity()) {
+                            System.out.println("Not enough stock!");
+                            System.out.println("Current stock: " + selectedProduct.getStockQuantity());
                             continue;
-                        }
-
+                            }
+                         // kết thúc
                         // Order only supports adding one product at a time, so loop by quantity
                         for (int i = 0; i < qty; i++) {
                             order.addProductToOrder(selectedProduct);
@@ -132,7 +139,10 @@ public class main {
 
                     // 4. Calculate total and print the bill
                     double total = order.calculateTotal();
-
+                    // code thêm Sau khi bán tự động trừ kho
+                    for (Product p : order.getItems()) {
+                         p.setStockQuantity(p.getStockQuantity() - 1);
+                    }
                     System.out.println("\n========== BILL ==========");
                     System.out.println("Order ID: " + order.getOrderID());
                     System.out.println("Customer: " + selectedCustomer.getCustomerName()
