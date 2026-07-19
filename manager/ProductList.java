@@ -48,11 +48,20 @@ public class ProductList {
         System.out.print("Enter Stock Quantity: ");
         int stock = Integer.parseInt(sc.nextLine());
 
-        if(price < 0 || stock < 0) {
-            System.out.println("Invalid Data!");
-            return;
-        }
+       // if(price < 0 || stock < 0) {
+          //  System.out.println("Invalid Data!");
+           // return;
+        // thay code mới Không cho nhập Price = 0 hoặc Stock = 0
+        if (price <= 0) {
+              System.out.println("Price must be greater than 0!");
+              return;
+               }
 
+         if (stock <= 0) {
+               System.out.println("Stock quantity must be greater than 0!");
+              return;
+              }
+    // kết thúc 
         if (type == 1) {
             // Khởi tạo sản phẩm thường
             Product product = new Product(id, name, category, price, stock);
