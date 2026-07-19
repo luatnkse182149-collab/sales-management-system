@@ -58,14 +58,32 @@ public class VipCustomer extends Customer {
         this.rewardPoints = rewardPoints;
     }
 
-    @Override
-    public void viewVipCustomer() {
-        System.out.println("===== VIP CUSTOMER DETAILS =====");
+   @Override
+public void viewVipCustomer() {
 
-        System.out.printf  ("%-10s | %-13s | %-20s | %-15s | %-15s | %-15s | %-15s | %-20s\n",
-                "VIP Level", "Discount Rate", "Membership Card ID", "Reward Points", "Customer ID", "Customer Name", "Phone", "Address");
+    System.out.printf(
+            "%-10s %-15s %-15s %-15s %-12s %-20s %-15s %-20s\n",
+            "VIP",
+            "Discount",
+            "Card ID",
+            "Points",
+            "Cust ID",
+            "Name",
+            "Phone",
+            "Address");
 
-        System.out.println(vipLevel + " | " + discountRate + " | " + membershipCardID + " | " + rewardPoints + " | " + getCustomerID() + " | " + getCustomerName() + " | " + getPhone() + " | " + getAddress());
-    }
+    System.out.println("---------------------------------------------------------------------------------------------------------------");
+
+    System.out.printf(
+            "%-10s %-15.2f %-15s %-15.0f %-12s %-20s %-15s %-20s\n",
+            vipLevel,
+            discountRate,
+            membershipCardID,
+            rewardPoints,
+            getCustomerID(),
+            getCustomerName(),
+            getPhone(),
+            getAddress());
+}
     
 }
