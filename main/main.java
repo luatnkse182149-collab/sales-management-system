@@ -8,6 +8,7 @@ import model.VipCustomer;
 import model.Product;
 import model.ImportedProduct;
 import model.Order;
+import java.util.ArrayList;
 
 public class main {
 
@@ -75,86 +76,143 @@ public class main {
                     break;
 
                 case 6:
-                    System.out.println("\n===== CREATE ORDER =====");
 
-                    // 1. Select an existing customer
-                    System.out.print("Enter Customer ID: ");
-                    String custCode = sc.nextLine();
-                    Customer selectedCustomer = customerList.findCustomerByCode(custCode);
+    System.out.println("\n===== CREATE ORDER =====");
 
-                    if (selectedCustomer == null) {
-                        System.out.println("Customer not found! Please add the customer first (option 2).");
-                        break;
-}
+    // 1. Select Customer
+    System.out.print("Enter Customer ID: ");
+    String custCode = sc.nextLine();
 
-                    // 2. Create a new order for that customer
-                    String orderCode = "OR-" + System.currentTimeMillis();
-                    System.out.println("Generated Order ID: " + orderCode);
-                    Order order = new Order(orderCode, selectedCustomer);
+    Customer selectedCustomer = customerList.findCustomerByCode(custCode);
 
-                    // 3. Add products to the order (loop until user types 'done')
-                    boolean addingProducts = true;
-                    while (addingProducts) {
-                        System.out.print("Enter Product ID to add (or type 'done' to finish): ");
-                        String prodCode = sc.nextLine();
+    if (selectedCustomer == null) {
+        System.out.println("Customer not found! Please add customer first.");
+        break;
+    }
 
-                        if (prodCode.equalsIgnoreCase("done")) {
-                            addingProducts = false;
-                            continue;
-                        }
+    // 2. Create Order
+    String orderCode = "OR-" + System.currentTimeMillis();
+    Order order = new Order(orderCode, selectedCustomer);
 
-                        Product selectedProduct = productList.findProductByCode(prodCode);
-                        if (selectedProduct == null) {
-                            System.out.println("Product not found with ID: " + prodCode);
-                            continue;
-                        }
+    // 3. Add Products
+    boolean addingProducts = true;
 
-                        //System.out.print("Enter quantity: ");
-                        //int qty = Integer.parseInt(sc.nextLine());
+    while (addingProducts) {
 
-                        //if (qty <= 0) {
-                            //System.out.println("Invalid quantity!");
-                            //continue;
-                        //}
-                        // code mới Không cho bán vượt số lượng tồn
+        System.out.print("Enter Product ID (or 'done'): ");
+        String prodCode = sc.nextLine();
 
-                        if (qty > selectedProduct.getStockQuantity()) {
-                            System.out.println("Not enough stock!");
-                            System.out.println("Current stock: " + selectedProduct.getStockQuantity());
-                            continue;
-                            }
-                         // kết thúc
-                        // Order only supports adding one product at a time, so loop by quantity
-                        for (int i = 0; i < qty; i++) {
-                            order.addProductToOrder(selectedProduct);
-                        }
+        if (prodCode.equalsIgnoreCase("done")) {
+            break;
+        }
 
-                        System.out.println("Added " + qty + " x " + selectedProduct.getProductName());
-                    }
+        Product selectedProduct = productList.findProductByCode(prodCode);
 
-                    if (order.getItems().isEmpty()) {
-                        System.out.println("Order has no items. Cancelling bill creation.");
-                        break;
-                    }
+        if (selectedProduct == null) {
+            System.out.println("Product not found!");
+            continue;
+        }
 
-                    // 4. Calculate total and print the bill
-                    double total = order.calculateTotal();
-                    // code thêm Sau khi bán tự động trừ kho
-                    for (Product p : order.getItems()) {
-                         p.setStockQuantity(p.getStockQuantity() - 1);
-                    }
-                    System.out.println("\n========== BILL ==========");
-                    System.out.println("Order ID: " + order.getOrderID());
-                    System.out.println("Customer: " + selectedCustomer.getCustomerName()
-                            + (selectedCustomer instanceof VipCustomer ? " (VIP)" : " (Regular)"));
-                    System.out.println("---------------------------");
-                    for (Product p : order.getItems()) {
-                        System.out.println("- " + p.getProductName() + " : $" + p.getPrice());
-                    }
-                    System.out.println("---------------------------");
-                    System.out.println("Total Amount: $" + total);
-                    System.out.println("===========================");
-                    break;
+        System.out.print("Enter Quantity: ");
+        int qty = Integer.parseInt(sc.nextLine());
+
+        if (qty <= 0) {
+            System.out.println("Quantity must be greater than 0!");
+            continue;
+        }
+
+        if (qty > selectedProduct.getStockQuantity()) {
+            System.out.println("Not enough stock!");
+            System.out.println("Current stock: "
+                    + selectedProduct.getStockQuantity());
+            continue;
+        }
+
+        for (int i = 0; i < qty; i++) {
+            order.addProductToOrder(selectedProduct);
+        }
+
+        selectedProduct.setStockQuantity(
+                selectedProduct.getStockQuantity() - qty);
+
+        System.out.println("Added "
+                + qty
+                + " x "
+                + selectedProduct.getProductName());
+
+    }
+
+    if (order.getItems().isEmpty()) {
+        System.out.println("Order has no items.");
+        break;
+    }
+
+    // Calculate Total
+    double total = order.calculateTotal();
+
+    // Print Bill
+    System.out.println("\n================ SALES BILL ================");
+
+    System.out.println("Order ID : " + order.getOrderID());
+
+    System.out.println("Customer : "
+            + selectedCustomer.getCustomerName()
+            + (selectedCustomer instanceof VipCustomer
+            ? " (VIP)"
+            : " (Regular)"));
+
+    System.out.println("---------------------------------------------------------------");
+
+    System.out.printf("%-5s %-20s %-8s %-12s %-12s\n",
+            "No",
+            "Product",
+            "Qty",
+            "Unit Price",
+            "Line Total");
+
+    System.out.println("---------------------------------------------------------------");
+
+    ArrayList<Product> printed = new ArrayList<>();
+
+    int no = 1;
+
+    for (Product p : order.getItems()) {
+
+        if (printed.contains(p))
+            continue;
+
+        int qty = 0;
+
+        for (Product item : order.getItems()) {
+
+            if (item == p) {
+                qty++;
+            }
+
+        }
+
+        double lineTotal = qty * p.getPrice();
+
+        System.out.printf("%-5d %-20s %-8d %-12.2f %-12.2f\n",
+                no++,
+                p.getProductName(),
+                qty,
+                p.getPrice(),
+                lineTotal);
+
+        printed.add(p);
+
+    }
+
+    System.out.println("---------------------------------------------------------------");
+
+    System.out.printf("%-47s %.2f\n",
+            "Grand Total ($):",
+            total);
+
+    System.out.println("===============================================================");
+
+    break;
 
                 case 7:
                     
